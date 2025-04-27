@@ -54,7 +54,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--do_eval', type=bool, default=True, help='Whether to run evaluation')
     parser.add_argument('--do_predict', type=bool, default=True, help='Whether to run predictions')
     parser.add_argument('--evaluation_strategy', type=str, default='epoch', help='Evaluation strategy during training')
-    parser.add_argument('--save_steps', type=int, default=500, help='Save checkpoint every X steps')
+    parser.add_argument('--save_steps', type=int, default=10000, help='Save checkpoint every X steps')
     parser.add_argument('--seed', type=int, default=1, help='Random seed for initialization')
 
     return parser.parse_args()
@@ -91,8 +91,8 @@ def main():
     trainer = Trainer(
         model=model,
         args=training_args,
-        train_dataset=data_handler.datasets['train_dev'],
-        eval_dataset=data_handler.datasets['test'],
+        train_dataset=data_handler.datasets['train'],
+        eval_dataset=data_handler.datasets['dev'],
         compute_metrics=compute_metrics,
         callbacks=None
     )

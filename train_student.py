@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import torch
 import torch.nn.functional as F
@@ -54,7 +55,7 @@ def loss(logits, labels, teachers_proba):
 
 
 class KGTrainer(Trainer):
-    def compute_loss(self, model, inputs, return_outputs=True) -> Tensor:
+    def compute_loss(self, model, inputs, return_outputs=True, num_items_in_batch=None) -> Tensor:
         labels = inputs.pop("labels")
         teachers_proba = inputs.pop("teachers_proba")
         outputs = model(**inputs)
@@ -76,7 +77,7 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_dir', type=str, default='data/GLOBAL/Student')
     parser.add_argument('--max_seq_length', type=int, default=128)
-    parser.add_argument('--model_name_or_path', type=str, default='models/dmis-labbiobert-base-cased-v1.2')
+    parser.add_argument('--model_name_or_path', type=str, default='dmis-lab/biobert-v1.1')
     parser.add_argument('--output_dir', type=str, default=None)
     parser.add_argument('--logging_dir', type=str, default=None)
     parser.add_argument('--num_train_epochs', type=int, default=3)
@@ -119,23 +120,23 @@ def main():
     trainer = KGTrainer(
         model=model,
         args=training_args,
-        train_dataset=data_handler.datasets['train_dev'],
-        eval_dataset=data_handler.datasets['test'],
+        train_dataset=data_handler.datasets['train'],
+        eval_dataset=data_handler.datasets['dev'],
     )
 
     trainer.add_callback(EvaluateCallback(model_args.model_name_or_path, labels, data_args.data_dir))
 
-    # # Train the model
-    # if training_args.do_train:
-    #     trainer.train(
-    #         model_path=model_args.model_name_or_path if os.path.isdir(model_args.model_name_or_path) else None,
-    #         resume_from_checkpoint=True
-    #     )
-    #
-    # # Save the model and tokenizer
-    # if training_args.do_train and training_args.should_save:
-    #     trainer.save_model(training_args.output_dir)
-    #     tokenizer.save_pretrained(training_args.output_dir)
+    # Train the model
+    if training_args.do_train:
+        trainer.train(
+            model_path=model_args.model_name_or_path if os.path.isdir(model_args.model_name_or_path) else None,
+            resume_from_checkpoint=True
+        )
+
+    # Save the model and tokenizer
+    if training_args.do_train and training_args.should_save:
+        trainer.save_model(training_args.output_dir)
+        tokenizer.save_pretrained(training_args.output_dir)
 
     # Evaluate the model
     if training_args.do_eval:

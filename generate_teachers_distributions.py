@@ -69,7 +69,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--data_dir', type=str, default='data')
     parser.add_argument('--teachers_dir', type=str, default='models/Teachers')
     parser.add_argument('--max_seq_length', type=int, default=128)
-    parser.add_argument('--model_name_or_path', type=str, default='models/dmis-labbiobert-base-cased-v1.2')
+    parser.add_argument('--model_name_or_path', type=str, default='dmis-lab/biobert-v1.1')
     parser.add_argument('--output_dir', type=str, default=None)
     parser.add_argument('--logging_dir', type=str, default=None)
     parser.add_argument('--num_train_epochs', type=int, default=3)
@@ -79,7 +79,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--do_eval', type=bool, default=True)
     parser.add_argument('--do_predict', type=bool, default=True)
     parser.add_argument('--evaluation_strategy', type=str, default='epoch')
-    parser.add_argument('--save_steps', type=int, default=500)
+    parser.add_argument('--save_steps', type=int, default=10000)
     parser.add_argument('--seed', type=int, default=1)
 
 

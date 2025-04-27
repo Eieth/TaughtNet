@@ -14,7 +14,7 @@ from transformers import (
 
 from src.data_handling.DataClasses import Split
 from src.data_handling.DataHandlers import MultiNERDataHandler
-from utils import student_performance
+from .utils import student_performance
 
 
 class EvaluateCallback(TrainerCallback):
