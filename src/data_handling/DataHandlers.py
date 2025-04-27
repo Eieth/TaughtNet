@@ -473,7 +473,6 @@ class MultiNERDataHandler(DataHandler):
         else:
             return ["B-BC2GM", "I-BC2GM", "B-BC5CDR-chem", "I-BC5CDR-chem", "B-NCBI-disease", "I-NCBI-disease", "O"]
 
-
 class REDataHandler(DataHandler):
     def __init__(self, tokenizer, label_idx=-1):
         super().__init__(tokenizer)

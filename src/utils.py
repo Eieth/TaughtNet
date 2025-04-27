@@ -186,43 +186,25 @@ def setup_logging(training_args: TrainingArguments) -> logging.Logger:
 
 	return logger
 
-def prepare_training_datasets(data_handler, data_args: DataTrainingArguments, config: AutoConfig) -> None:
+def prepare_datasets(data_handler, data_args: DataTrainingArguments, config: AutoConfig, mode: Split) -> None:
 	"""
-	Prepare training and evaluation datasets.
+	Prepare datasets.
 
 	Args:
 		data_handler: Data handler instance
 		data_args: Data configuration arguments
 		config: Model configuration
+		mode: mode
 	"""
-	# Prepare training/validation dataset
+	# Prepare dataset
 	data_handler.set_dataset(
 		data_dir=data_args.data_dir,
 		labels=data_handler.get_labels(data_args.labels),
 		model_type=config.model_type,
 		max_seq_length=data_args.max_seq_length,
 		overwrite_cache=data_args.overwrite_cache,
-		mode=Split.train
+		mode=mode
 	)
-
-def prepare_test_datasets(data_handler, data_args: DataTrainingArguments, config: AutoConfig) -> None:
-		"""
-		Prepare training and evaluation datasets.
-
-		Args:
-			data_handler: Data handler instance
-			data_args: Data configuration arguments
-			config: Model configuration
-		"""
-		# Prepare test dataset
-		data_handler.set_dataset(
-			data_dir=data_args.data_dir,
-			labels=data_handler.get_labels(data_args.labels),
-			model_type=config.model_type,
-			max_seq_length=data_args.max_seq_length,
-			overwrite_cache=data_args.overwrite_cache,
-			mode=Split.test
-		)
 
 def initialize_dataclasses(args: argparse.Namespace) -> Tuple:
 	"""

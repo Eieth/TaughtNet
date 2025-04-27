@@ -5,16 +5,18 @@ import torch
 import torch.nn.functional as F
 from torch import Tensor
 from transformers import Trainer
+
 from src.utils import (
     initialize_tokenizer,
     initialize_model,
     setup_logging,
-    prepare_training_datasets,
-    initialize_dataclasses, prepare_test_datasets
+    initialize_dataclasses,
+    prepare_datasets
 )
 
 from src.EvaluateCallback import EvaluateCallback
 from src.data_handling.DataHandlers import MultiNERDataHandler
+from src.data_handling.DataClasses import Split
 
 
 # General
@@ -113,8 +115,8 @@ def main():
     model, config = initialize_model(model_args, len(labels), labels)
 
     # Prepare datasets
-    prepare_training_datasets(data_handler, data_args, config)
-    prepare_test_datasets(data_handler, data_args, config)
+    prepare_datasets(data_handler, data_args, config, Split.train)
+    prepare_datasets(data_handler, data_args, config, Split.test)
 
     # Initialize Trainer
     trainer = KGTrainer(
@@ -130,7 +132,7 @@ def main():
     if training_args.do_train:
         trainer.train(
             model_path=model_args.model_name_or_path if os.path.isdir(model_args.model_name_or_path) else None,
-            resume_from_checkpoint=True
+            resume_from_checkpoint=None
         )
 
     # Save the model and tokenizer

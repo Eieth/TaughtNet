@@ -12,14 +12,14 @@ from transformers import Trainer
 
 # Local imports
 from src.data_handling.DataHandlers import NERDataHandler
-from src.utils import(
+from src.data_handling.DataClasses import Split
+from src.utils import (
     compute_metrics,
     initialize_tokenizer,
     initialize_model,
     setup_logging,
-    prepare_training_datasets, 
-    prepare_test_datasets,
-    initialize_dataclasses
+    initialize_dataclasses,
+    prepare_datasets
 )
 
 
@@ -84,8 +84,8 @@ def main():
     model, config = initialize_model(model_args, len(labels), labels)
 
     # Prepare datasets
-    prepare_training_datasets(data_handler, data_args, config)
-    prepare_test_datasets(data_handler, data_args, config)
+    prepare_datasets(data_handler, data_args, config, Split.train)
+    prepare_datasets(data_handler, data_args, config, Split.test)
 
     # Initialize Trainer
     trainer = Trainer(
