@@ -86,7 +86,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--do_train', type=bool, default=True, help='Whether to run training')
     parser.add_argument('--do_eval', type=bool, default=True, help='Whether to run evaluation')
     parser.add_argument('--do_predict', type=bool, default=True, help='Whether to run predictions')
-    parser.add_argument('--save_steps', type=int, default=500)
+    parser.add_argument('--save_steps', type=int, default=10000)
     parser.add_argument('--seed', type=int, default=1)
 
     return parser.parse_args()
