@@ -267,6 +267,15 @@ class NERDataHandler(DataHandler):
         else:
             return ["B", "I", "O"]
 
+class MergeNERDataHandler(NERDataHandler):
+    def __init__(self, tokenizer, label_idx=-1):
+        super().__init__(tokenizer)
+        # in NER datasets, the last column is usually reserved for NER label
+        self.label_idx = label_idx
+
+    def get_labels(self, path: str) -> List[str]:
+        return ["B-BC2GM", "I-BC2GM", "B-BC5CDR-chem", "I-BC5CDR-chem", "B-NCBI-disease", "I-NCBI-disease", "O"]
+
 class MultiNERDataHandler(DataHandler):
     def __init__(self, tokenizer, label_idx=-1):
         super().__init__(tokenizer)

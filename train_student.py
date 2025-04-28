@@ -1,5 +1,6 @@
 import argparse
 import os
+os.environ['HF_ENDPOINT'] = 'https://hf-mirror.com'
 
 import torch
 import torch.nn.functional as F
@@ -57,7 +58,7 @@ def loss(logits, labels, teachers_proba):
 
 
 class KGTrainer(Trainer):
-    def compute_loss(self, model, inputs, return_outputs=True, num_items_in_batch=None) -> Tensor:
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None) -> Tensor:
         labels = inputs.pop("labels")
         teachers_proba = inputs.pop("teachers_proba")
         outputs = model(**inputs)
@@ -117,12 +118,13 @@ def main():
     # Prepare datasets
     prepare_datasets(data_handler, data_args, config, Split.train)
     prepare_datasets(data_handler, data_args, config, Split.test)
+    prepare_datasets(data_handler, data_args, config, Split.dev)
 
     # Initialize Trainer
     trainer = KGTrainer(
         model=model,
         args=training_args,
-        train_dataset=data_handler.datasets['train'],
+        train_dataset=data_handler.datasets['train_dev'],
         eval_dataset=data_handler.datasets['dev'],
     )
 

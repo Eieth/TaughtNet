@@ -11,7 +11,7 @@ import os
 from transformers import Trainer
 
 # Local imports
-from src.data_handling.DataHandlers import NERDataHandler
+from src.data_handling.DataHandlers import NERDataHandler, MultiNERDataHandler, MergeNERDataHandler
 from src.data_handling.DataClasses import Split
 from src.utils import (
     compute_metrics,
@@ -56,6 +56,8 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('--evaluation_strategy', type=str, default='epoch', help='Evaluation strategy during training')
     parser.add_argument('--save_steps', type=int, default=10000, help='Save checkpoint every X steps')
     parser.add_argument('--seed', type=int, default=1, help='Random seed for initialization')
+    parser.add_argument('--merge_mode', type=bool, default=False, help='merge mode')
+
 
     return parser.parse_args()
 
@@ -77,7 +79,7 @@ def main():
     tokenizer = initialize_tokenizer(model_args)
 
     # Initialize data handler and get labels
-    data_handler = NERDataHandler(tokenizer)
+    data_handler = NERDataHandler(tokenizer) if not bool(vars(args).get('merge_mode')) else MergeNERDataHandler(tokenizer)
     labels = data_handler.get_labels(data_args.labels)
 
     # Initialize model
@@ -86,12 +88,13 @@ def main():
     # Prepare datasets
     prepare_datasets(data_handler, data_args, config, Split.train)
     prepare_datasets(data_handler, data_args, config, Split.test)
+    prepare_datasets(data_handler, data_args, config, Split.dev)
 
     # Initialize Trainer
     trainer = Trainer(
         model=model,
         args=training_args,
-        train_dataset=data_handler.datasets['train'],
+        train_dataset=data_handler.datasets['train_dev'],
         eval_dataset=data_handler.datasets['dev'],
         compute_metrics=compute_metrics,
         callbacks=None

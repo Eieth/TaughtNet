@@ -73,6 +73,6 @@ class SequenceInputFeatures:
     label_ids: Optional[List[int]] = None
 
 class Split(Enum):
-    train = "train"
+    train = "train_dev"
     dev = "dev"
     test = "test"
